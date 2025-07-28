@@ -1,0 +1,29 @@
+<!doctype html><html><head>
+  <meta charset="utf-8">
+  <link href="https://unpkg.com/maplibre-gl@3.5.2/dist/maplibre-gl.css" rel="stylesheet">
+  <style>html,body,#map{height:100%;margin:0}</style>
+</head><body><div id="map"></div>
+<script src="https://unpkg.com/maplibre-gl@3.5.2/dist/maplibre-gl.js"></script>
+<script>
+  const map = new maplibregl.Map({
+    container:"map", center:[33.3,35.15], zoom:7,
+    style:{
+      "version":8,
+      "sources":{
+        "roads":{
+          "type":"vector",
+          "url":"http://localhost:8080/cyprus_roads.json"   // <-- TileJSON!
+        }
+      },
+      "layers":[{
+        "id":"roads-line","type":"line","source":"roads","source-layer":"roads",
+        "paint":{
+          "line-color":["match",["get","highway"],
+            "motorway","#d73027","primary","#fc8d59","secondary","#fee08b",
+            "tertiary","#d9ef8b","#91bfdb"],
+          "line-width":["interpolate",["linear"],["zoom"],6,0.4,14,4]
+        }
+      }]
+    }
+  });
+</script></body></html>

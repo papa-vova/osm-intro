@@ -1,0 +1,37 @@
+<!DOCTYPE html><html><head>
+<meta charset="utf-8"/>
+<title>Cyprus roads – static PMTiles (CDN script)</title>
+
+<link href="https://unpkg.com/maplibre-gl@5.5.0/dist/maplibre-gl.css" rel="stylesheet">
+<script src="https://unpkg.com/maplibre-gl@5.5.0/dist/maplibre-gl.js"></script>
+
+<!-- UMD build exposes window.pmtiles.* and sets CORS headers -->
+<script src="https://cdn.jsdelivr.net/npm/pmtiles@4.3.0/dist/pmtiles.js"></script>
+
+<style>html,body,#map{height:100%;margin:0}</style>
+</head><body><div id="map"></div>
+
+<script>
+  const protocol = new pmtiles.Protocol();      // global from the script tag
+  maplibregl.addProtocol("pmtiles", protocol.tile);
+
+  const map = new maplibregl.Map({
+    container: "map",
+    center: [33.3, 35.15], zoom: 7,
+    style: {
+      version: 8,
+      sources: {
+        roads: { type:"vector", url:"pmtiles://cyprus_roads.pmtiles" }
+      },
+      layers: [{
+        id:"roads-line", type:"line", source:"roads", "source-layer":"roads",
+        paint:{
+          "line-color":["match",["get","highway"],
+            "motorway","#d73027","trunk","#fc8d59","primary","#fee08b",
+            "secondary","#d9ef8b","#91bfdb"],
+          "line-width":["interpolate",["linear"],["zoom"],6,0.4,14,4]
+        }
+      }]
+    }
+  });
+</script></body></html>
